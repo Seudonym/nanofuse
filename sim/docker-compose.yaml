@@ -1,0 +1,53 @@
+services:
+  simulation:
+    build: .
+    container_name: gz-fortress-container
+    command: bash -c "source /opt/ros/humble/setup.bash && ign gazebo /workdir/robot.sdf"
+    network_mode: host
+    volumes:
+      - .:/workdir
+    environment:
+      - DISPLAY=${DISPLAY}
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "ign gazebo server"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    ipc: host
+  
+  ros_gz_bridge:
+    build: .
+    container_name: ros-gz-bridge-container
+    command: bash -c "source /opt/ros/humble/setup.bash && ros2 launch /workdir/ros_gz_bridge.launch.py"
+    network_mode: host
+    volumes:
+      - .:/workdir
+    depends_on:
+      - simulation
+    ipc: host
+
+  ros_local_bridge:
+    build: .
+    container_name: ros-local-bridge-container
+    command: bash -c "source /opt/ros/humble/setup.bash && python3 /workdir/ros_local_bridge.py"
+    network_mode: host
+    volumes:
+      - .:/workdir
+    depends_on:
+      - simulation
+    ipc: host
+
+
+  circle_publisher:
+    build: .
+    container_name: circle-publisher-container
+    command: >
+      bash /workdir/circle_pub.bash
+    network_mode: host
+    volumes:
+      - .:/workdir
+    depends_on:
+      - simulation
+      - ros_gz_bridge
+    ipc: host
+
