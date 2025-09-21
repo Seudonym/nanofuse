@@ -19,9 +19,23 @@
         </plugin>
 
         <plugin
-            filename="gz-sim-imu-system"
-            name="gz::sim::systems::Imu">
+            filename="ignition-gazebo-imu-system"
+            name="ignition::gazebo::systems::Imu">
         </plugin>
+        <plugin
+            filename="ignition-gazebo-navsat-system"
+            name="ignition::gazebo::systems::NavSat">
+        </plugin>
+
+        <spherical_coordinates>
+            <surface_model>EARTH_WGS84</surface_model>
+            <world_frame_orientation>ENU</world_frame_orientation>
+            <latitude_deg>-22.9</latitude_deg>
+            <longitude_deg>-43.2</longitude_deg>
+            <elevation>0</elevation>
+            <heading_deg>0</heading_deg>
+        </spherical_coordinates>
+
 
         <light type="directional" name="sun">
             <cast_shadows>true</cast_shadows>
@@ -85,18 +99,100 @@
 
             <!-- Chassis -->
             <link name='chassis'>
-                <sensor name="imu_sensor1" type="imu">
-                    <always_on>1</always_on>
-                    <update_rate>1</update_rate>
-                    <visualize>true</visualize>
-                    <topic>imu1</topic>
+                <sensor name="imu_sensor" type="imu">
+                    <always_on>true</always_on>
+                    <update_rate>200</update_rate>
+                    <visualize>false</visualize>
+                    <pose>0 0 0.05 0 0 0</pose>
+                    <topic>imu</topic>
+                    <imu>
+                        <angular_velocity>
+                            <x>
+                                <noise type="gaussian">
+                                    <mean>0.0</mean>
+                                    <stddev>0.002</stddev>          <!-- rad/s white noise -->
+                                    <bias_mean>0.0005</bias_mean>   <!-- rad/s bias -->
+                                    <bias_stddev>1e-4</bias_stddev> <!-- rad/s bias RW -->
+                                </noise>
+                            </x>
+                            <y>
+                                <noise type="gaussian">
+                                    <mean>0.0</mean>
+                                    <stddev>0.002</stddev>
+                                    <bias_mean>0.0005</bias_mean>
+                                    <bias_stddev>1e-4</bias_stddev>
+                                </noise>
+                            </y>
+                            <z>
+                                <noise type="gaussian">
+                                    <mean>0.0</mean>
+                                    <stddev>0.002</stddev>
+                                    <bias_mean>0.0008</bias_mean>
+                                    <bias_stddev>1e-4</bias_stddev>
+                                </noise>
+                            </z>
+                        </angular_velocity>
+
+                        <linear_acceleration>
+                            <x>
+                                <noise type="gaussian">
+                                    <mean>0.0</mean>
+                                    <stddev>0.05</stddev>           <!-- m/s^2 white noise -->
+                                    <bias_mean>0.02</bias_mean>     <!-- m/s^2 bias -->
+                                    <bias_stddev>0.005</bias_stddev><!-- m/s^2 bias RW -->
+                                </noise>
+                            </x>
+                            <y>
+                                <noise type="gaussian">
+                                    <mean>0.0</mean>
+                                    <stddev>0.05</stddev>
+                                    <bias_mean>0.02</bias_mean>
+                                    <bias_stddev>0.005</bias_stddev>
+                                </noise>
+                            </y>
+                            <z>
+                                <noise type="gaussian">
+                                    <mean>0.0</mean>
+                                    <stddev>0.05</stddev>
+                                    <bias_mean>0.03</bias_mean>
+                                    <bias_stddev>0.005</bias_stddev>
+                                </noise>
+                            </z>
+                        </linear_acceleration>
+                    </imu>
                 </sensor>
-                <sensor name="imu_sensor2" type="imu">
-                    <always_on>1</always_on>
-                    <update_rate>1</update_rate>
-                    <visualize>true</visualize>
-                    <topic>imu2</topic>
+
+                <!-- GPS on base_link -->
+                <sensor name="gps_sensor" type="gps">
+                    <always_on>true</always_on>
+                    <update_rate>5</update_rate>
+                    <visualize>false</visualize>
+                    <pose>0 0 0.10 0 0 0</pose>
+                    <topic>gps</topic>
+                    <gps>
+                        <position_sensing>
+                            <horizontal>
+                                <noise type="gaussian">
+                                    <mean>0.0</mean>
+                                    <stddev>0.1</stddev>  <!-- meters RMS -->
+                                </noise>
+                            </horizontal>
+                            <vertical>
+                                <noise type="gaussian">
+                                    <mean>0.0</mean>
+                                    <stddev>0.1</stddev>  <!-- meters RMS -->
+                                </noise>
+                            </vertical>
+                        </position_sensing>
+                        <velocity_sensing>
+                            <noise type="gaussian">
+                                <mean>0.0</mean>
+                                <stddev>0.05</stddev>    <!-- m/s RMS -->
+                            </noise>
+                        </velocity_sensing>
+                    </gps>
                 </sensor>
+
 
                 <pose relative_to='__model__'>0.5 0 0.4 0 0 0</pose>
                 <inertial>

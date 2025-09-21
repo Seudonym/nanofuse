@@ -21,19 +21,21 @@ def generate_launch_description():
                     "/model/mobile_robot/odometry@nav_msgs/msg/Odometry@gz.msgs.Odometry"
                 ],
             ),
-            # IMUs
+            # IMU
             Node(
                 package="ros_gz_bridge",
                 executable="parameter_bridge",
                 output="screen",
-                arguments=["/imu1@sensor_msgs/msg/Imu@gz.msgs.IMU"],
+                arguments=["/imu@sensor_msgs/msg/Imu@gz.msgs.IMU"],
             ),
+            # GPS
             Node(
                 package="ros_gz_bridge",
                 executable="parameter_bridge",
                 output="screen",
-                arguments=["/imu2@sensor_msgs/msg/Imu@gz.msgs.IMU"],
+                arguments=["/gps@sensor_msgs/msg/NavSatFix@gz.msgs.NavSat"],
             ),
+          
         ]
     )
 
