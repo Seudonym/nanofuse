@@ -38,11 +38,11 @@ services:
     ipc: host
 
 
-  circle_publisher:
+  motion_publisher:
     build: .
-    container_name: circle-publisher-container
+    container_name: motion-publisher-container
     command: >
-      bash /workdir/circle_pub.bash
+      bash /workdir/random_walk.bash
     network_mode: host
     volumes:
       - .:/workdir
