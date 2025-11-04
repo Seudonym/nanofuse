@@ -37,17 +37,17 @@ services:
       - simulation
     ipc: host
 
-  inference_node:
-    build: .
-    container_name: inference-node-container
-    command: bash -c "source /torch_venv/bin/activate && python3 /workdir/sim/inference_node.py"
-    network_mode: host
-    volumes:
-      - ..:/workdir/
-    depends_on:
-      - simulation
-      - ros_gz_bridge
-    ipc: host
+  # inference_node:
+  #   build: .
+  #   container_name: inference-node-container
+  #   command: bash -c "source /torch_venv/bin/activate && python3 /workdir/sim/inference_node.py"
+  #   network_mode: host
+  #   volumes:
+  #     - ..:/workdir/
+  #   depends_on:
+  #     - simulation
+  #     - ros_gz_bridge
+  #   ipc: host
 
   motion_publisher:
     build: .
